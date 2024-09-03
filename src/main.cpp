@@ -1,7 +1,75 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+
+static void ParseShader(const std::string& filepath, std::string& vertexShader, std::string& fragmentShader) {
+    enum class ShaderType {
+		NONE = -1, VERTEX = 0, FRAGMENT = 1
+	};
+
+    ShaderType type = ShaderType::NONE;
+
+    std::ifstream stream(filepath);
+    
+    std::stringstream ss[2];
+    std::string line;
+    while (getline(stream, line))
+    {
+        if (line.find("#shader") != std::string::npos) {
+			if (line.find("vertex") != std::string::npos) {
+				type = ShaderType::VERTEX;
+			}
+			else if (line.find("fragment") != std::string::npos) {
+				type = ShaderType::FRAGMENT;
+			}
+        }
+        else{
+            ss[static_cast<int>(type)] << line << '\n';
+        }
+    }
+    vertexShader = ss[0].str();
+	fragmentShader = ss[1].str();
+}
+
+static unsigned int CompileShader(unsigned int type, const std::string& source) {
+	unsigned int id = glCreateShader(type);
+	const char* src = source.c_str();
+	glShaderSource(id, 1, &src, nullptr);
+	glCompileShader(id);
+
+    int result;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+
+    if (result == GL_FALSE) {
+        int length;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        char* message = (char *)_malloca(length * sizeof(char));
+        glGetShaderInfoLog(id, length, &length, message);
+        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
+    }
+
+	return id;
+}
+
+static unsigned int CreateShaders(const std::string& vertexShader, const std::string& fragmentShader) {
+    unsigned int program = glCreateProgram();
+    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+    glAttachShader(program, vs);
+	glAttachShader(program, fs);
+	glLinkProgram(program);
+	glValidateProgram(program);
+
+	glDeleteShader(vs);
+	glDeleteShader(fs); 
+
+	return program;
+}
 int main(void)
 {
     GLFWwindow* window;
@@ -30,8 +98,8 @@ int main(void)
 
     float positions[6] = {
         -0.5f, -0.5f,
-         0.5f, -0.5f,
-         0.5f,  0.5f,
+         0.0f, 0.5f,
+         0.5f,  -0.5f,
     };
 
     unsigned int buffer;
@@ -42,6 +110,13 @@ int main(void)
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
+    std::string vertexShader;
+	std::string fragmentShader;
+
+    ParseShader("../res/shaders/Basic.shader", vertexShader, fragmentShader);
+
+    unsigned int program = CreateShaders(vertexShader, fragmentShader);
+    glUseProgram(program);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -56,7 +131,7 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
     }
-
+    glDeleteProgram(program);
     glfwTerminate();
     return 0;
 }
