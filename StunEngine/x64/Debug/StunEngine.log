@@ -1,0 +1,20 @@
+﻿LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+main.obj : error LNK2001: unresolved external symbol __glewBindBuffer
+main.obj : error LNK2001: unresolved external symbol __glewBufferData
+main.obj : error LNK2001: unresolved external symbol __glewGenBuffers
+main.obj : error LNK2001: unresolved external symbol __glewAttachShader
+main.obj : error LNK2001: unresolved external symbol __glewCompileShader
+main.obj : error LNK2001: unresolved external symbol __glewCreateProgram
+main.obj : error LNK2001: unresolved external symbol __glewCreateShader
+main.obj : error LNK2001: unresolved external symbol __glewDeleteProgram
+main.obj : error LNK2001: unresolved external symbol __glewDeleteShader
+main.obj : error LNK2001: unresolved external symbol __glewEnableVertexAttribArray
+main.obj : error LNK2001: unresolved external symbol __glewGetShaderInfoLog
+main.obj : error LNK2001: unresolved external symbol __glewGetShaderiv
+main.obj : error LNK2001: unresolved external symbol __glewLinkProgram
+main.obj : error LNK2001: unresolved external symbol __glewShaderSource
+main.obj : error LNK2001: unresolved external symbol __glewUseProgram
+main.obj : error LNK2001: unresolved external symbol __glewValidateProgram
+main.obj : error LNK2001: unresolved external symbol __glewVertexAttribPointer
+C:\Users\patry\Desktop\Stun\thirdparty\glew\lib\Release\Win32\glew32s.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+C:\Users\patry\Desktop\Stun\x64\Debug\StunEngine.exe : fatal error LNK1120: 17 unresolved externals
