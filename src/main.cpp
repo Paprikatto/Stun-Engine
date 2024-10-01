@@ -6,6 +6,21 @@
 #include <string>
 #include <sstream>
 
+#define ASSERT(x) if (!(x)) __debugbreak();
+#define GLCall(x) GLClearError(); x; ASSERT(GLCheckError(#x, __FILE__, __LINE__));
+
+static void GLClearError() {
+	while (glGetError() != GL_NO_ERROR);
+}
+static bool GLCheckError(const char* function, const char* file, int line) {
+    bool success = true;
+	while (GLenum error = glGetError()) {
+		std::cout << "[OpenGL Error] (" << error << ")" << function << " " << file << ":" << line << std::endl;
+        success = false;
+	}
+    return success;
+}
+
 static void ParseShader(const std::string& filepath, std::string& vertexShader, std::string& fragmentShader) {
     enum class ShaderType {
 		NONE = -1, VERTEX = 0, FRAGMENT = 1
@@ -135,7 +150,7 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
