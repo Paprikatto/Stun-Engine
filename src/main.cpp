@@ -6,20 +6,7 @@
 #include <string>
 #include <sstream>
 
-#define ASSERT(x) if (!(x)) __debugbreak();
-#define GLCall(x) GLClearError(); x; ASSERT(GLCheckError(#x, __FILE__, __LINE__));
-
-static void GLClearError() {
-	while (glGetError() != GL_NO_ERROR);
-}
-static bool GLCheckError(const char* function, const char* file, int line) {
-    bool success = true;
-	while (GLenum error = glGetError()) {
-		std::cout << "[OpenGL Error] (" << error << ")" << function << " " << file << ":" << line << std::endl;
-        success = false;
-	}
-    return success;
-}
+#include "Renderer.h"
 
 static void ParseShader(const std::string& filepath, std::string& vertexShader, std::string& fragmentShader) {
     enum class ShaderType {
@@ -131,11 +118,6 @@ int main(void)
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-    //Create buffer that stores positions
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
 
     //Specify how positions are stored
     glEnableVertexAttribArray(0);
@@ -176,7 +158,7 @@ int main(void)
         glBindVertexArray(vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+        GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

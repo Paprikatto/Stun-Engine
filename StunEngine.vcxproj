@@ -145,9 +145,18 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)thirdparty\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)thirdparty\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\VertexBuffer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
