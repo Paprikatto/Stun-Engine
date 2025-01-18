@@ -1,6 +1,6 @@
 #include "VertexBuffer.h"
 #include "Renderer.h"
-VertexBuffer::VertexBuffer(const void* data, unsigned size)
+VertexBuffer::VertexBuffer(const void* data, unsigned int size)
 {
     //Create buffer that stores positions
     GL_CALL(glGenBuffers(1, &m_RendererID));
