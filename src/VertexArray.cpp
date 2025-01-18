@@ -5,11 +5,11 @@
 VertexArray::VertexArray()
 {
 	GL_CALL(glGenVertexArrays(1, &m_RendererID));
- 	glBindVertexArray(m_RendererID);
 }
 
 VertexArray::~VertexArray()
 {
+	GL_CALL(glDeleteVertexArrays(1, &m_RendererID));
 }
 
 void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)

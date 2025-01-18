@@ -118,7 +118,9 @@ int main(void)
 			2, 3, 0
 		};
 
+    	//vertex array stores the vertex buffers paired with the layout
     	VertexArray va;
+    	//vertex buffer stores the vertex data
     	VertexBuffer vb(positions, 4 * 2 * sizeof(float));
     	
 		VertexBufferLayout layout;
