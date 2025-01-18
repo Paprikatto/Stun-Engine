@@ -147,7 +147,9 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)thirdparty\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
+    <ClCompile Include="src\VertexBufferLayout.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
@@ -155,7 +157,9 @@
   <ItemGroup>
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBuffer.h" />
+    <ClInclude Include="src\VertexBufferLayout.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />

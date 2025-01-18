@@ -9,6 +9,7 @@
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "VertexArray.h"
 
 static void ParseShader(const std::string& filepath, std::string& vertexShader, std::string& fragmentShader) {
     enum class ShaderType {
@@ -117,16 +118,14 @@ int main(void)
 			2, 3, 0
 		};
 
-    	unsigned int vao;
-    	glGenVertexArrays(1, &vao);
-    	glBindVertexArray(vao);
-
+    	VertexArray va;
     	VertexBuffer vb(positions, 4 * 2 * sizeof(float));
-
-    	//Specify how positions are stored
-    	glEnableVertexAttribArray(0);
-    	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-
+    	
+		VertexBufferLayout layout;
+    	//2 floats per vertex (x and y)
+    	layout.Push<float>(2);
+    	va.AddBuffer(vb, layout);
+    	
     	IndexBuffer ib(indices, 6);
 
     	std::string vertexShader;
@@ -156,7 +155,7 @@ int main(void)
     		glUseProgram(shader);
     		glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f);
 
-    		glBindVertexArray(vao);
+    		va.Bind();
     		ib.Bind();
     		GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
