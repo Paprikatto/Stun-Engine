@@ -20,3 +20,8 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
     	ib.Bind();
     	GL_CALL(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
 }
+
+void Renderer::Clear() const
+{
+	glClear(GL_COLOR_BUFFER_BIT);
+}

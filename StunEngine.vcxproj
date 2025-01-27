@@ -148,6 +148,8 @@
     </ClCompile>
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\stb\stb_image.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
     <ClCompile Include="src\VertexBufferLayout.cpp" />
@@ -159,6 +161,8 @@
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\stb\stb_image.h" />
+    <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
@@ -166,6 +170,9 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="res\textures\tex.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="thirdparty\" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
