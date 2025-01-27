@@ -12,6 +12,8 @@
 #include "Texture.h"
 #include "VertexArray.h"
 
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 
 int main(void)
 {
@@ -72,6 +74,8 @@ int main(void)
     	
     	IndexBuffer ib(indices, 6);
 
+    	glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+    	
 		Shader shader = Shader("res/shaders/Basic.shader");
     	shader.Bind();
 		shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
@@ -79,6 +83,7 @@ int main(void)
     	Texture texture("res/textures/tex.jpg");
     	texture.Bind();
     	shader.SetUniform1i("u_Texture", 0);
+    	shader.SetUniformMat4f("u_MVP", proj);
 
 		va.Unbind();
     	shader.Unbind();
