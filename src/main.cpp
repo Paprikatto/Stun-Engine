@@ -12,8 +12,13 @@
 #include "Texture.h"
 #include "VertexArray.h"
 
-#include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
+//imgui
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 int main(void)
 {
@@ -27,9 +32,10 @@ int main(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-
+	const int width = 640;
+	const int height = 480;
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -46,10 +52,10 @@ int main(void)
 
 	{
 		float positions[] = {
-			-0.5f, -0.5f, 0.0f, 0.0f,
-			 0.5f, -0.5f, 1.0f, 0.0f,
-			 0.5f,  0.5f, 1.0f, 1.0f,
-			 -0.5f, 0.5f, 0.0f, 1.0f
+			-50.0f, -50.0f, 0.0f, 0.0f,
+			50.0f, -50.0f, 1.0f, 0.0f,
+			50.0f,  50.0f, 1.0f, 1.0f,
+			-50.0f, 50.0f, 0.0f, 1.0f
 		};
 
     	unsigned int indices[] = {
@@ -74,7 +80,11 @@ int main(void)
     	
     	IndexBuffer ib(indices, 6);
 
-    	glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+    	glm::mat4 proj = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 200.0f, 0.0f));
+
+    	glm::mat4 mvp = proj * view * model;
     	
 		Shader shader = Shader("res/shaders/Basic.shader");
     	shader.Bind();
@@ -83,7 +93,7 @@ int main(void)
     	Texture texture("res/textures/tex.jpg");
     	texture.Bind();
     	shader.SetUniform1i("u_Texture", 0);
-    	shader.SetUniformMat4f("u_MVP", proj);
+    	shader.SetUniformMat4f("u_MVP", mvp);
 
 		va.Unbind();
     	shader.Unbind();
@@ -91,21 +101,62 @@ int main(void)
     	ib.Unbind();
     	Renderer renderer;
 
+    	IMGUI_CHECKVERSION();
+    	ImGui::CreateContext();
+    	ImGuiIO& io = ImGui::GetIO();
+    	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    	ImGui_ImplGlfw_InitForOpenGL(window, true);
+    	ImGui_ImplOpenGL3_Init();
+    	ImGui::StyleColorsDark();
+    	
+    	
+    	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+    	glm::vec3 translation2 = glm::vec3(200.0f, 0.0f, 0.0f);
     	/* Loop until the user closes the window */
     	while (!glfwWindowShouldClose(window))
     	{
-    		/* Render here */
-    		glClear(GL_COLOR_BUFFER_BIT);
+    		renderer.Clear();
 
-    		renderer.Draw(va, ib, shader);
+    		//imgui initialization
+    		ImGui_ImplOpenGL3_NewFrame();
+    		ImGui_ImplGlfw_NewFrame();
+    		ImGui::NewFrame();
 
+    		shader.Bind();
+    		{
+    			model = glm::translate(glm::mat4(1.0f), translation);
+    			mvp = proj * view * model;
+    			shader.SetUniformMat4f("u_MVP", mvp);
+    			renderer.Draw(va, ib, shader);
+    		}
+    		{
+    			model = glm::translate(glm::mat4(1.0f), translation2);
+    			mvp = proj * view * model;
+    			shader.SetUniformMat4f("u_MVP", mvp);
+    			renderer.Draw(va, ib, shader);
+    		}
+    		//imgui
+    		{
+    			ImGui::SliderFloat3("position", &translation.x, 0.0f, 200.0f);
+    			ImGui::SliderFloat3("position2", &translation2.x, 0.0f, 200.0f);
+    		}
+    		//imgui end
+    		ImGui::Render();
+    		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    		
     		/* Swap front and back buffers */
     		glfwSwapBuffers(window);
 
     		/* Poll for and process events */
     		glfwPollEvents();
+    		
     	}
 	}
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	
     glfwTerminate();
     return 0;
 }
