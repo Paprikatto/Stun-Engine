@@ -52,15 +52,30 @@ int main(void)
 
 	{
 		float positions[] = {
-			-50.0f, -50.0f, 0.0f, 0.0f,
-			50.0f, -50.0f, 1.0f, 0.0f,
-			50.0f,  50.0f, 1.0f, 1.0f,
-			-50.0f, 50.0f, 0.0f, 1.0f
+			//position         //texture coordinates
+			-2.0f, -2.0f, 2.0f, 0.0f, 0.0f, 0.0f,
+			2.0f, -2.0f, 2.0f, 1.0f, 0.0f, 0.0f,
+			2.0f,  2.0f, 2.0f, 1.0f, 1.0f, 0.0f,
+			-2.0f, 2.0f, 2.0f, 0.0f, 1.0f, 0.0f,
+			-2.0f, -2.0f, -2.0f, 0.0f, 0.0f, 0.0f,
+			2.0f, -2.0f, -2.0f, 1.0f, 0.0f, 0.0f,
+			2.0f,  2.0f, -2.0f, 1.0f, 1.0f, 0.0f,
+			-2.0f, 2.0f, -2.0f, 0.0f, 1.0f, 0.0f,
 		};
 
     	unsigned int indices[] = {
     		0, 1, 2,
-			2, 3, 0
+			2, 3, 0,
+    		1, 0, 4,
+    		4, 5, 1,
+            1, 5, 6,
+            6, 2, 1,
+            3, 2, 6,
+    		6, 7, 3,
+            4, 0, 3,
+            3, 7, 4,
+            5, 4, 7,
+            7, 6, 5
 		};
 
     	GL_CALL(glEnable(GL_BLEND));
@@ -69,26 +84,28 @@ int main(void)
     	//vertex array stores the vertex buffers paired with the layout
     	VertexArray va;
     	//vertex buffer stores the vertex data
-    	VertexBuffer vb(positions, 4 * 4 * sizeof(float));
+    	VertexBuffer vb(positions, 6 * 8 * sizeof(float));
     	
 		VertexBufferLayout layout;
-    	//2 floats per vertex (x and y)
-    	layout.Push<float>(2);
-    	//texture coordinates
-    	layout.Push<float>(2);
+    	//3 floats per vertex (x, y, z)
+    	layout.Push<float>(3);
+    	//color
+    	layout.Push<float>(3);
     	va.AddBuffer(vb, layout);
     	
-    	IndexBuffer ib(indices, 6);
+    	IndexBuffer ib(indices, 3 * 12);
 
-    	glm::mat4 proj = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    	// glm::mat4 proj = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
+    	glm::mat4 proj = glm::perspective(glm::radians(45.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -30.0f));
     	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 200.0f, 0.0f));
 
     	glm::mat4 mvp = proj * view * model;
     	
 		Shader shader = Shader("res/shaders/Basic.shader");
     	shader.Bind();
-		shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
+    	shader.SetUniform4f("m_color", 0.8f, 0.3f, 0.8f, 1.0f);
+		// shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 
     	Texture texture("res/textures/tex.jpg");
     	texture.Bind();
@@ -112,8 +129,11 @@ int main(void)
     	
     	
     	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+    	auto model_scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    	float scale = 1.0f;
     	glm::vec3 translation2 = glm::vec3(200.0f, 0.0f, 0.0f);
     	/* Loop until the user closes the window */
+    	glEnable(GL_DEPTH_TEST);
     	while (!glfwWindowShouldClose(window))
     	{
     		renderer.Clear();
@@ -126,19 +146,25 @@ int main(void)
     		shader.Bind();
     		{
     			model = glm::translate(glm::mat4(1.0f), translation);
-    			mvp = proj * view * model;
-    			shader.SetUniformMat4f("u_MVP", mvp);
+    			model = glm::rotate(model,static_cast<float>(glfwGetTime()), glm::vec3(0.5f, 0.5f, 0.0f));
+    			model_scale = glm::vec3(scale, scale, scale);
+    			model = glm::scale(model, model_scale);
+    			shader.SetUniformMat4f("model", model);
+    			shader.SetUniformMat4f("view", view);
+    			shader.SetUniformMat4f("projection", proj);
     			renderer.Draw(va, ib, shader);
     		}
     		{
     			model = glm::translate(glm::mat4(1.0f), translation2);
-    			mvp = proj * view * model;
-    			shader.SetUniformMat4f("u_MVP", mvp);
+    			shader.SetUniformMat4f("model", model);
+    			shader.SetUniformMat4f("view", view);
+    			shader.SetUniformMat4f("projection", proj);
     			renderer.Draw(va, ib, shader);
     		}
     		//imgui
     		{
-    			ImGui::SliderFloat3("position", &translation.x, 0.0f, 200.0f);
+    			ImGui::SliderFloat3("position", &translation.x, -100.0f, 100.0f);
+    			ImGui::SliderFloat("Scale", &scale, 0.0f, 2.0f);
     			ImGui::SliderFloat3("position2", &translation2.x, 0.0f, 200.0f);
     		}
     		//imgui end
