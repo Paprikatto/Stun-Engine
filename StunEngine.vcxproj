@@ -191,6 +191,8 @@
     <Content Include=".gitignore" />
     <Content Include="res\shaders\BasicFragment.glsl" />
     <Content Include="res\shaders\BasicVertex.glsl" />
+    <Content Include="res\shaders\LightFragment.glsl" />
+    <Content Include="res\shaders\LightVertex.glsl" />
     <Content Include="res\textures\tex.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
