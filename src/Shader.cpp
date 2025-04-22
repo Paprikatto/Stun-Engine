@@ -12,6 +12,14 @@ Shader::Shader(const std::string& filepath): m_Filepath(filepath), m_RendererID(
 	m_RendererID = CreateShaders(vs, fs);
 }
 
+Shader::Shader(const std::string& vertexShader, const std::string& fragmentShader)
+{
+	std::string vs, fs;
+	LoadFile(vertexShader, vs);
+	LoadFile(fragmentShader, fs);
+	m_RendererID = CreateShaders(vs, fs);
+}
+
 Shader::~Shader()
 {
 	GL_CALL(glDeleteProgram(m_RendererID));
@@ -59,10 +67,6 @@ int Shader::GetUniformLocation(const std::string& name)
 }
 
 void Shader::ParseShader(std::string& vertexShader, std::string& fragmentShader) {
-    enum class ShaderType {
-		NONE = -1, VERTEX = 0, FRAGMENT = 1
-	};
-
     ShaderType type = ShaderType::NONE;
 
     std::ifstream stream(m_Filepath);
@@ -122,4 +126,17 @@ unsigned int Shader::CreateShaders(const std::string& vertexShader, const std::s
 	glDeleteShader(fs); 
 
 	return program;
+}
+
+void Shader::LoadFile(const std::string& filepath, std::string& target)
+{
+	std::ifstream file(filepath);
+	if (!file.is_open())
+	{
+		std::cerr << "Could not open file: " << filepath << std::endl;
+		return;
+	}
+	std::stringstream buffer;
+	buffer << file.rdbuf();
+	target = buffer.str();
 }

@@ -19,7 +19,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-
+#include <filesystem>
 int main(void)
 {
     GLFWwindow* window;
@@ -52,7 +52,7 @@ int main(void)
 
 	{
 		float positions[] = {
-			//position         //texture coordinates
+			//position         //color
 			-2.0f, -2.0f, 2.0f, 0.0f, 0.0f, 0.0f,
 			2.0f, -2.0f, 2.0f, 1.0f, 0.0f, 0.0f,
 			2.0f,  2.0f, 2.0f, 1.0f, 1.0f, 0.0f,
@@ -96,21 +96,20 @@ int main(void)
     	IndexBuffer ib(indices, 3 * 12);
 
     	// glm::mat4 proj = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
-    	glm::mat4 proj = glm::perspective(glm::radians(45.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+    	glm::mat4 proj = glm::perspective(glm::radians(45.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 200.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -30.0f));
     	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 200.0f, 0.0f));
 
     	glm::mat4 mvp = proj * view * model;
     	
-		Shader shader = Shader("res/shaders/Basic.shader");
+		// Shader shader = Shader("res/shaders/Basic.shader");
+    	std::cout << "Current working directory: " << std::filesystem::current_path() << std::endl;
+    	Shader shader = Shader("res/shaders/BasicVertex.glsl", "res/shaders/BasicFragment.glsl");
     	shader.Bind();
-    	shader.SetUniform4f("m_color", 0.8f, 0.3f, 0.8f, 1.0f);
-		// shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 
     	Texture texture("res/textures/tex.jpg");
     	texture.Bind();
-    	shader.SetUniform1i("u_Texture", 0);
-    	shader.SetUniformMat4f("u_MVP", mvp);
+    	// shader.SetUniform1i("u_Texture", 0);
 
 		va.Unbind();
     	shader.Unbind();
