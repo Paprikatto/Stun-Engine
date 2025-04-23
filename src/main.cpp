@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <fstream>
 #include <string>
 
 #include "Renderer.h"
@@ -19,7 +18,6 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include <filesystem>
 int main(void)
 {
     GLFWwindow* window;
@@ -104,24 +102,24 @@ int main(void)
 			// Top face
 			20, 21, 22,
 			22, 23, 20
-		}; 
+		};
 
-    	GL_CALL(glEnable(GL_BLEND))
+    	GL_CALL(glEnable(GL_BLEND));
     	glEnable(GL_DEPTH_TEST);
-    	GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))
-    	
+    	GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
     	//vertex array stores the vertex buffers paired with the layout
     	VertexArray va;
     	//vertex buffer stores the vertex data
     	VertexBuffer vb(positions, 6 * 4 * 6 * sizeof(float));
-    	
+
 		VertexBufferLayout layout;
     	//3 floats per vertex (x, y, z)
     	layout.Push<float>(3);
     	//color
     	layout.Push<float>(3);
     	va.AddBuffer(vb, layout);
-    	
+
     	IndexBuffer ib(indices, 3 * 12);
 
     	glm::mat4 proj = glm::perspective(glm::radians(45.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 200.0f);
@@ -133,7 +131,7 @@ int main(void)
     	light_shader.SetVec3f("objectColor", 0.6f, 0.6f, 0.6f);
     	light_shader.SetVec3f("lightColor", 1.0f, 1.0f, 1.0f);
     	light_shader.SetUniform1f("ambientStrength", 0.1f);
-    	
+
     	Shader shader = Shader("res/shaders/BasicVertex.glsl", "res/shaders/BasicFragment.glsl");
     	shader.Bind();
     	shader.SetVec4f("u_Color", 0.6f, 0.6f, 0.6f, 1.0f);
@@ -156,8 +154,8 @@ int main(void)
     	ImGui_ImplGlfw_InitForOpenGL(window, true);
     	ImGui_ImplOpenGL3_Init();
     	ImGui::StyleColorsDark();
-    	
-    	
+
+
     	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 20.0f);
     	glm::vec3 lightPos = glm::vec3(3.0f, 2.0f, 25.0f);
     	auto model_scale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -203,19 +201,19 @@ int main(void)
     		//imgui end
     		ImGui::Render();
     		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    		
+
     		/* Swap front and back buffers */
     		glfwSwapBuffers(window);
 
     		/* Poll for and process events */
     		glfwPollEvents();
-    		
+
     	}
 	}
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
-	
+
     glfwTerminate();
     return 0;
 }

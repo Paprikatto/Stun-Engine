@@ -1,5 +1,6 @@
 #include "Shader.h"
 #include  "Renderer.h"
+#include <cstdlib>
 #include <sstream>
 #include <iostream>
 #include <fstream>
@@ -76,14 +77,14 @@ void Shader::ParseShader(std::string& vertexShader, std::string& fragmentShader)
     ShaderType type = ShaderType::NONE;
 
     std::ifstream stream(m_Filepath);
-    
+
     std::stringstream ss[2];
     std::string line;
     while (getline(stream, line))
     {
         if (line.find("#shader") != std::string::npos) {
 			if (line.find("vertex") != std::string::npos) {
-                
+
 				type = ShaderType::VERTEX;
 			}
 			else if (line.find("fragment") != std::string::npos) {
@@ -110,7 +111,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
     if (result == GL_FALSE) {
         int length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char *)_malloca(length * sizeof(char));
+        char* message = (char *)malloc(length * sizeof(char));
         glGetShaderInfoLog(id, length, &length, message);
         std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
     }
@@ -129,7 +130,7 @@ unsigned int Shader::CreateShaders(const std::string& vertexShader, const std::s
 	glValidateProgram(program);
 
 	glDeleteShader(vs);
-	glDeleteShader(fs); 
+	glDeleteShader(fs);
 
 	return program;
 }
