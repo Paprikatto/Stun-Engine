@@ -134,16 +134,12 @@ int main(void)
     	light_shader.SetVec3f("lightColor", 1.0f, 1.0f, 1.0f);
     	light_shader.SetUniform1f("ambientStrength", 0.1f);
     	
-    	Shader shader = Shader("res/shaders/BasicVertex.glsl", "res/shaders/BasicFragment.glsl");
-    	shader.Bind();
-    	shader.SetVec4f("u_Color", 0.6f, 0.6f, 0.6f, 1.0f);
-
     	Texture texture("res/textures/tex.jpg");
     	texture.Bind();
     	// shader.SetUniform1i("u_Texture", 0);
 
 		va.Unbind();
-    	shader.Unbind();
+    	light_shader.Unbind();
     	vb.Unbind();
     	ib.Unbind();
     	Renderer renderer;
@@ -171,17 +167,6 @@ int main(void)
     		ImGui_ImplGlfw_NewFrame();
     		ImGui::NewFrame();
 
-    		// shader.Bind();
-    		// {
-    		// 	model = glm::translate(glm::mat4(1.0f), translation);
-    		// 	model = glm::rotate(model,static_cast<float>(glfwGetTime()), glm::vec3(0.5f, 0.5f, 0.0f));
-    		// 	model_scale = glm::vec3(scale, scale, scale);
-    		// 	model = glm::scale(model, model_scale);
-    		// 	shader.SetUniformMat4f("model", model);
-    		// 	shader.SetUniformMat4f("view", view);
-    		// 	shader.SetUniformMat4f("projection", proj);
-    		// 	renderer.Draw(va, ib, shader);
-    		// }
     		{
     			light_shader.Bind();
 				model = glm::translate(glm::mat4(1.0f), translation);
