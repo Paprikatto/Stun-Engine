@@ -176,6 +176,8 @@ int main(void)
     			light_shader.SetUniformMat4f("model", model);
     			light_shader.SetUniformMat4f("view", view);
     			light_shader.SetUniformMat4f("projection", proj);
+    			glm::mat3 normal_matrix = glm::transpose(glm::inverse(glm::mat3(model)));
+    			light_shader.SetUniformMat3f("normalMatrix", normal_matrix);
     			light_shader.SetVec3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
     			renderer.Draw(va, ib, light_shader);
     		}

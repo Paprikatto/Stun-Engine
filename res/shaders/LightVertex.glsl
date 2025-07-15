@@ -9,11 +9,11 @@ out vec3 Normal;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat3 normalMatrix;
 void main()
 {
     //convert the vertex position to world space
     FragPos = vec3(model * vec4(position, 1.0));
-    mat3 normalMatrix = mat3(transpose(inverse(model)));
     Normal = normalize(normalMatrix * aNormal);
 	gl_Position = projection * view * model * vec4(position, 1.0);
 }
