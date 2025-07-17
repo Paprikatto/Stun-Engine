@@ -127,7 +127,7 @@ int main(void)
     	
     	IndexBuffer ib(indices, 3 * 12);
 
-    	Camera camera(glm::vec3(0.0f, 0.0f, -30.0f), 45.0f, width, height);
+    	Camera camera(glm::vec3(0.0f, 0.0f, -25.0f), 45.0f, width, height);
     	glm::mat4 model = glm::mat4(1.0f);
 
     	Shader lit_shader = Shader("res/shaders/LightVertex.glsl", "res/shaders/LightFragment.glsl");
@@ -180,12 +180,13 @@ int main(void)
     			lit_shader.SetUniformMat4f("projection", camera.get_projection_matrix());
     			glm::mat3 normal_matrix = glm::transpose(glm::inverse(glm::mat3(model)));
     			lit_shader.SetUniformMat3f("normalMatrix", normal_matrix);
-    			lit_shader.SetVec3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
+    			lit_shader.SetVec3f("lightPos", lightPos);
+    			lit_shader.SetVec3f("viewPos", camera.get_position());
     			renderer.Draw(va, ib, lit_shader);
     		}
     		//imgui
     		{
-    			ImGui::SliderFloat3("position", &translation.x, -100.0f, 100.0f);
+    			ImGui::SliderFloat3("position", &translation.x, -30.0f, 30.0f);
     			ImGui::SliderFloat("Scale", &scale, 0.0f, 5.0f);
     			ImGui::SliderFloat3("lightPos", &lightPos.x, -40.0f, 40.0f);
     		}

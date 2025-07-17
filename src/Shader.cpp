@@ -51,6 +51,12 @@ void Shader::SetVec3f(const std::string& name, float v0, float v1, float v2)
 	GL_CALL(glUniform3f(loc, v0, v1, v2));
 }
 
+void Shader::SetVec3f(const std::string& name, const glm::vec3& vec)
+{
+	int loc = GetUniformLocation(name);
+	GL_CALL(glUniform3f(loc, vec.x, vec.y, vec.z));
+}
+
 void Shader::SetVec4f(const std::string& name, float v0, float v1, float v2, float v3)
 {
 	int loc = GetUniformLocation(name);
