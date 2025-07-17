@@ -16,5 +16,5 @@ void Camera::set_fov(float fov)
 void Camera::set_position(glm::vec3 position)
 {
     m_position = position;
-    m_view_matrix = translate(glm::mat4(1.0f), m_position);
+    m_view_matrix = translate(glm::mat4(1.0f), glm::vec3(-m_position.x, -m_position.y, -m_position.z));
 }

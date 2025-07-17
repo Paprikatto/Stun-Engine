@@ -127,7 +127,7 @@ int main(void)
     	
     	IndexBuffer ib(indices, 3 * 12);
 
-    	Camera camera(glm::vec3(0.0f, 0.0f, -25.0f), 45.0f, width, height);
+    	Camera camera(glm::vec3(0.0f, 0.0f, 23.0f), 45.0f, width, height);
     	glm::mat4 model = glm::mat4(1.0f);
 
     	Shader lit_shader = Shader("res/shaders/LightVertex.glsl", "res/shaders/LightFragment.glsl");
@@ -160,6 +160,8 @@ int main(void)
     	glm::vec3 lightPos = glm::vec3(3.0f, 2.0f, 25.0f);
     	auto model_scale = glm::vec3(1.0f, 1.0f, 1.0f);
     	float scale = 1.0f;
+
+    	double lastFrame = 0.0;
     	while (!glfwWindowShouldClose(window))
     	{
     		renderer.Clear();
@@ -169,6 +171,31 @@ int main(void)
     		ImGui_ImplGlfw_NewFrame();
     		ImGui::NewFrame();
 
+    		//delta time
+    		double currentFrame = glfwGetTime();
+    		double deltaTime = currentFrame - lastFrame;
+    		lastFrame = currentFrame;
+
+    		//camera movement
+    		glm::vec3 camera_movement(0.0f);
+    		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+				camera_movement.z += -1.0f;
+    		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    			camera_movement.z += 1.0f;
+    		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+				camera_movement.x += -1.0f;
+			if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+				camera_movement.x += 1.0f;
+
+			float speed = static_cast<float>(10.0 * deltaTime);
+			camera_movement.x *= speed;
+			camera_movement.y *= speed;
+			camera_movement.z *= speed;
+			camera.set_position(camera.get_position() + camera_movement);
+    			
+    			
+    		
+			//rendering
     		{
     			lit_shader.Bind();
 				model = glm::translate(glm::mat4(1.0f), translation);
