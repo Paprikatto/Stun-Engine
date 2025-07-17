@@ -20,6 +20,9 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include <filesystem>
+
+#include "Camera.h"
+
 int main(void)
 {
     GLFWwindow* window;
@@ -32,8 +35,8 @@ int main(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	const int width = 640;
-	const int height = 480;
+	constexpr int width = 640;
+	constexpr int height = 480;
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
     if (!window)
@@ -124,22 +127,21 @@ int main(void)
     	
     	IndexBuffer ib(indices, 3 * 12);
 
-    	glm::mat4 proj = glm::perspective(glm::radians(45.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 200.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -30.0f));
+    	Camera camera(glm::vec3(0.0f, 0.0f, -30.0f), 45.0f, width, height);
     	glm::mat4 model = glm::mat4(1.0f);
 
-    	Shader light_shader = Shader("res/shaders/LightVertex.glsl", "res/shaders/LightFragment.glsl");
-    	light_shader.Bind();
-    	light_shader.SetVec3f("objectColor", 0.6f, 0.6f, 0.6f);
-    	light_shader.SetVec3f("lightColor", 1.0f, 1.0f, 1.0f);
-    	light_shader.SetUniform1f("ambientStrength", 0.1f);
+    	Shader lit_shader = Shader("res/shaders/LightVertex.glsl", "res/shaders/LightFragment.glsl");
+    	lit_shader.Bind();
+    	lit_shader.SetVec3f("objectColor", 0.6f, 0.6f, 0.6f);
+    	lit_shader.SetVec3f("lightColor", 1.0f, 1.0f, 1.0f);
+    	lit_shader.SetUniform1f("ambientStrength", 0.1f);
     	
     	Texture texture("res/textures/tex.jpg");
     	texture.Bind();
     	// shader.SetUniform1i("u_Texture", 0);
 
 		va.Unbind();
-    	light_shader.Unbind();
+    	lit_shader.Unbind();
     	vb.Unbind();
     	ib.Unbind();
     	Renderer renderer;
@@ -168,18 +170,18 @@ int main(void)
     		ImGui::NewFrame();
 
     		{
-    			light_shader.Bind();
+    			lit_shader.Bind();
 				model = glm::translate(glm::mat4(1.0f), translation);
     			model = glm::rotate(model,static_cast<float>(glfwGetTime()), glm::vec3(0.5f, 0.5f, 0.0f));
     			model_scale = glm::vec3(scale, scale, scale);
     			model = glm::scale(model, model_scale);
-    			light_shader.SetUniformMat4f("model", model);
-    			light_shader.SetUniformMat4f("view", view);
-    			light_shader.SetUniformMat4f("projection", proj);
+    			lit_shader.SetUniformMat4f("model", model);
+    			lit_shader.SetUniformMat4f("view", camera.get_view_matrix());
+    			lit_shader.SetUniformMat4f("projection", camera.get_projection_matrix());
     			glm::mat3 normal_matrix = glm::transpose(glm::inverse(glm::mat3(model)));
-    			light_shader.SetUniformMat3f("normalMatrix", normal_matrix);
-    			light_shader.SetVec3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
-    			renderer.Draw(va, ib, light_shader);
+    			lit_shader.SetUniformMat3f("normalMatrix", normal_matrix);
+    			lit_shader.SetVec3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
+    			renderer.Draw(va, ib, lit_shader);
     		}
     		//imgui
     		{
