@@ -20,6 +20,17 @@ Shader::Shader(const std::string& vertexShader, const std::string& fragmentShade
 	m_RendererID = CreateShaders(vs, fs);
 }
 
+Shader::Shader(const unsigned char* vertexShader, unsigned int vertexShaderSize, const unsigned char* fragmentShader,
+	unsigned int fragmentShaderSize)
+{
+	//TODO: check if unsigned int value is bigger than int max value
+	const char *vertexData = reinterpret_cast<const char*>(vertexShader);
+	const char *fragmentData = reinterpret_cast<const char*>(fragmentShader);
+	m_RendererID = CreateShaders(vertexData, static_cast<int>(vertexShaderSize),
+		fragmentData, static_cast<int>(fragmentShaderSize));
+	
+}
+
 Shader::~Shader()
 {
 	GL_CALL(glDeleteProgram(m_RendererID));
@@ -129,10 +140,48 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	return id;
 }
 
+unsigned int Shader::CompileShader(unsigned int type, const char* data, const int length)
+{
+	unsigned int id = glCreateShader(type);
+	glShaderSource(id, 1, &data, &length);
+	glCompileShader(id);
+
+    int result;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+
+    if (result == GL_FALSE) {
+        int length;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        char* message = (char *)_malloca(length * sizeof(char));
+        glGetShaderInfoLog(id, length, &length, message);
+        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
+    }
+
+	return id;
+}
+
 unsigned int Shader::CreateShaders(const std::string& vertexShader, const std::string& fragmentShader) {
     unsigned int program = glCreateProgram();
     unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
     unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+    glAttachShader(program, vs);
+	glAttachShader(program, fs);
+	glLinkProgram(program);
+	glValidateProgram(program);
+
+	glDeleteShader(vs);
+	glDeleteShader(fs); 
+
+	return program;
+}
+
+unsigned int Shader::CreateShaders(const char* vertexShaderData, int vertexShaderLength, const char* fragmentShaderData,
+	int fragmentShaderLength)
+{
+    unsigned int program = glCreateProgram();
+    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShaderData, vertexShaderLength);
+    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShaderData, fragmentShaderLength);
 
     glAttachShader(program, vs);
 	glAttachShader(program, fs);

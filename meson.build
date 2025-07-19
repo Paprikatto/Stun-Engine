@@ -12,6 +12,7 @@ project('StunEngine', ['cpp', 'c'],
 
 subdir('src')
 subdir('thirdparty/imgui')
+subdir('res')
 
 add_project_arguments('-DGLEW_STATIC', language: 'cpp')
 add_project_link_arguments('-static-libstdc++', language: 'cpp')
@@ -32,7 +33,7 @@ glew_dep = declare_dependency(
     link_with: glew_lib,
 )
 
-exe = executable('StunEngine', sources + imgui_sources,
+exe = executable('StunEngine', sources + imgui_sources, shaders, 
   dependencies: [glfw_dep, glew_dep, opengl_dep],
   include_directories: include_directories('thirdparty/glm', 'thirdparty/imgui'),
 ) 

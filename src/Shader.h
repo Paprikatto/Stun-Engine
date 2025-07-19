@@ -15,6 +15,8 @@ private:
 public:
     Shader(const std::string& filepath);
     Shader(const std::string& vertexShader, const std::string& fragmentShader);
+    Shader(const unsigned char * vertexShader, unsigned int vertexShaderSize,
+           const unsigned char * fragmentShader, unsigned int fragmentShaderSize);
     ~Shader();
 
     void Bind() const;
@@ -30,6 +32,8 @@ private:
     int GetUniformLocation(const std::string& name);
     void ParseShader(std::string& vertexShader, std::string& fragmentShader);
     unsigned int CompileShader(unsigned int type, const std::string& source);
+    unsigned int CompileShader(unsigned int type, const char *data, int length);
     unsigned int CreateShaders(const std::string& vertexShader, const std::string& fragmentShader);
+    unsigned int CreateShaders(const char *vertexShaderData, int vertexShaderLength, const char *fragmentShaderData, int fragmentShaderLength);
     void LoadFile(const std::string& filepath, std::string& target);
 };

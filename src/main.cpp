@@ -23,6 +23,10 @@
 
 #include "Camera.h"
 
+//shaders
+#include "lit_vert.h"
+#include "lit_frag.h"
+
 int main(void)
 {
     GLFWwindow* window;
@@ -129,9 +133,10 @@ int main(void)
     	IndexBuffer ib(indices, 3 * 12);
 
     	Camera camera(glm::vec3(0.0f, 0.0f, 23.0f), 45.0f, width, height);
-    	glm::mat4 model = glm::mat4(1.0f);
+    	auto model = glm::mat4(1.0f);
 
-    	Shader lit_shader = Shader("res/shaders/LightVertex.glsl", "res/shaders/LightFragment.glsl");
+    	Shader lit_shader = Shader(___res_shaders_lit_vert, ___res_shaders_lit_vert_len,
+    		___res_shaders_lit_frag, ___res_shaders_lit_frag_len);
     	lit_shader.Bind();
     	lit_shader.SetVec3f("objectColor", 0.6f, 0.6f, 0.6f);
     	lit_shader.SetVec3f("lightColor", 1.0f, 1.0f, 1.0f);
