@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 
-Shader::Shader(const std::string& filepath): m_Filepath(filepath), m_RendererID(0)
+Shader::Shader(const std::string& filepath): m_RendererID(0), m_Filepath(filepath)
 {
 	std::string vs, fs;
     ParseShader(vs, fs);

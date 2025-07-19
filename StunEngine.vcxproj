@@ -191,6 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <Content Include="meson.build" />
     <Content Include="res\shaders\BasicFragment.glsl" />
     <Content Include="res\shaders\BasicVertex.glsl" />
     <Content Include="res\shaders\LightFragment.glsl" />

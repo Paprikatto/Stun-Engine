@@ -1,5 +1,5 @@
 #include "Camera.h"
-#include "glm/gtc/matrix_transform.hpp"
+#include "gtc/matrix_transform.hpp"
 
 Camera::Camera(glm::vec3 position, float fov, int width, int height): m_viewport_width(width), m_viewport_height(height)
 {

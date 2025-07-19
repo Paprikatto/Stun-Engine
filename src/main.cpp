@@ -12,13 +12,13 @@
 #include "Texture.h"
 #include "VertexArray.h"
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 
 //imgui
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include <filesystem>
 
 #include "Camera.h"
@@ -28,8 +28,9 @@ int main(void)
     GLFWwindow* window;
 
     /* Initialize the library */
-    if (!glfwInit())
+    if (!glfwInit()){
         return -1;
+    }
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

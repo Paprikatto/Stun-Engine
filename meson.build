@@ -1,0 +1,42 @@
+project('StunEngine', ['cpp', 'c'],
+  version: '0.1.0',
+  meson_version: '>= 0.60.0',
+  default_options: [
+    'cpp_std=c++20',
+    'default_library=static',
+    'warning_level=2',
+    'buildtype=debugoptimized',
+    'werror=true'
+  ]
+)
+#copy res folder
+copy_res = run_target('copy-res',
+                      command: ['cmd', '/c', 'xcopy', '/E', '/I', '/Y', meson.project_source_root() / 'res', meson.build_root() / 'res'],
+                      console: true
+)
+subdir('src')
+subdir('thirdparty/imgui')
+
+add_project_arguments('-DGLEW_STATIC', language: 'cpp')
+add_project_link_arguments('-static-libstdc++', language: 'cpp')
+
+opengl_dep = dependency('opengl', required: true)
+glfw_dep = declare_dependency(
+  include_directories: include_directories('thirdparty/glfw/include'),
+  link_args: ['-L' + meson.project_source_root() + '/thirdparty/glfw/lib-mingw-w64', '-lglfw3']
+)
+glew_lib = library('glew', ['thirdparty/glew-2.1.0/src/glew.c'],
+    include_directories: include_directories('thirdparty/glew-2.1.0/include'),
+    dependencies: [opengl_dep],
+    c_args: ['-DGLEW_STATIC', '-w'],
+    install: false,
+)
+glew_dep = declare_dependency(
+    include_directories: include_directories('thirdparty/glew-2.1.0/include'),
+    link_with: glew_lib,
+)
+
+exe = executable('StunEngine', sources + imgui_sources,
+  dependencies: [glfw_dep, glew_dep, opengl_dep],
+  include_directories: include_directories('thirdparty/glm', 'thirdparty/imgui'),
+) 
