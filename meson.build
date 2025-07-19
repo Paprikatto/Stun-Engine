@@ -9,11 +9,7 @@ project('StunEngine', ['cpp', 'c'],
     'werror=true'
   ]
 )
-#copy res folder
-copy_res = run_target('copy-res',
-                      command: ['cmd', '/c', 'xcopy', '/E', '/I', '/Y', meson.project_source_root() / 'res', meson.build_root() / 'res'],
-                      console: true
-)
+
 subdir('src')
 subdir('thirdparty/imgui')
 
