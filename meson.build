@@ -43,7 +43,7 @@ glew_dep = declare_dependency(
 
 assimp_dep = declare_dependency(
     include_directories: include_directories('thirdparty/assimp/include'),
-    link_args: ['-L' + meson.project_source_root() + '/thirdparty/assimp' + '-lassimp']
+    link_args: ['-L' + meson.project_source_root() + '/thirdparty/assimp/lib' + '-lassimp']
 )
 
 exe = executable('StunEngine', sources + imgui_sources, shaders, 
