@@ -33,14 +33,6 @@ glew_dep = declare_dependency(
     link_with: glew_lib,
 )
 
-#if system == 'windows'
-#    assimp_path = '\thirdparty\assimp\windows'
-#elif system == 'linux'
-#    assimp_path = '/thirdparty/assimp/linux'
-#else
-#    error('Unsupported system: ' + system)
-#endif
-
 assimp_dep = declare_dependency(
     include_directories: include_directories('thirdparty/assimp/include'),
     link_args: ['-L' + meson.project_source_root() + '/thirdparty/assimp/lib' + '-lassimp']
