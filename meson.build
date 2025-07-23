@@ -9,7 +9,7 @@ project('StunEngine', ['cpp', 'c'],
     'werror=true'
   ]
 )
-
+system = host_machine.system()
 subdir('src')
 subdir('thirdparty/imgui')
 subdir('res')
@@ -33,7 +33,20 @@ glew_dep = declare_dependency(
     link_with: glew_lib,
 )
 
+#if system == 'windows'
+#    assimp_path = '\thirdparty\assimp\windows'
+#elif system == 'linux'
+#    assimp_path = '/thirdparty/assimp/linux'
+#else
+#    error('Unsupported system: ' + system)
+#endif
+
+assimp_dep = declare_dependency(
+    include_directories: include_directories('thirdparty/assimp/include'),
+    link_args: ['-L' + meson.project_source_root() + '/thirdparty/assimp' + '-lassimp']
+)
+
 exe = executable('StunEngine', sources + imgui_sources, shaders, 
-  dependencies: [glfw_dep, glew_dep, opengl_dep],
+  dependencies: [glfw_dep, glew_dep, opengl_dep, assimp_dep],
   include_directories: include_directories('thirdparty/glm', 'thirdparty/imgui'),
 ) 
