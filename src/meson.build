@@ -18,4 +18,6 @@ sources = files(
     'VertexBufferLayout.h',
     'stb/stb_image.h',
     'stb/stb_image.cpp',
+    'Mesh.h',
+    'Mesh.cpp',
 )
