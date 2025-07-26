@@ -8,7 +8,7 @@ private:
     unsigned char* m_TextureData;
     int m_Width, m_Height, m_BPP;
 public:
-    Texture(std::string filePath);
+    explicit Texture(const std::string& filePath);
     ~Texture();
 
     void Bind(unsigned int slot = 0) const;

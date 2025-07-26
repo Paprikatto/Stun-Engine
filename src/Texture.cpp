@@ -1,6 +1,6 @@
 #include "Texture.h"
 #include "stb/stb_image.h"
-Texture::Texture(std::string filePath): m_RendererID(0), m_FilePath(filePath), m_TextureData(nullptr), m_Width(0), m_Height(0), m_BPP(0)
+Texture::Texture(const std::string& filePath): m_RendererID(0), m_FilePath(filePath), m_TextureData(nullptr), m_Width(0), m_Height(0), m_BPP(0)
 {
     stbi_set_flip_vertically_on_load(true);
     m_TextureData = stbi_load(filePath.c_str(), &m_Width, &m_Height, &m_BPP, 4);
@@ -13,6 +13,7 @@ Texture::Texture(std::string filePath): m_RendererID(0), m_FilePath(filePath), m
 
     GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_TextureData));
     GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
+    //TODO: Generate mipmaps
 
     if(m_TextureData != nullptr)
     {
