@@ -33,12 +33,17 @@ glew_dep = declare_dependency(
     link_with: glew_lib,
 )
 
+zlib_dep = declare_dependency(
+  include_directories: include_directories('thirdparty/zlib/include'),
+  link_args: ['-L' + meson.project_source_root() + '/thirdparty/zlib', '-lz']
+)
+
 assimp_dep = declare_dependency(
     include_directories: include_directories('thirdparty/assimp/include'),
-    link_args: ['-L' + meson.project_source_root() + '/thirdparty/assimp/lib' + '-lassimp']
+    link_args: ['-L' + meson.project_source_root() + '/thirdparty/assimp/lib', '-lassimp']
 )
 
 exe = executable('StunEngine', sources + imgui_sources, shaders, 
-  dependencies: [glfw_dep, glew_dep, opengl_dep, assimp_dep],
+  dependencies: [glfw_dep, glew_dep, opengl_dep, assimp_dep, zlib_dep],
   include_directories: include_directories('thirdparty/glm', 'thirdparty/imgui'),
 ) 

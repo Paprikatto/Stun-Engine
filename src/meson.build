@@ -20,4 +20,6 @@ sources = files(
     'stb/stb_image.cpp',
     'Mesh.h',
     'Mesh.cpp',
+    'Model.h',
+    'Model.cpp',
 )

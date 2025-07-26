@@ -1,15 +1,16 @@
 #pragma once
+#include <iostream>
+
 #include "glm.hpp"
 #include <vector>
-#include <string>
-#include <bits/shared_ptr.h>
 
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 #include "IndexBuffer.h"
-#include "Shader.h"
 #include "Texture.h"
+#include <optional>
+#include <bits/unique_ptr.h>
 
 struct Vertex{
     glm::vec3 position;
@@ -22,11 +23,11 @@ public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, const VertexBufferLayout &layout, std::shared_ptr<Shader> shader);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+
     void Draw() const;
 private:
-    VertexArray m_VAO;
-    VertexBuffer m_VBO;
-    IndexBuffer m_IBO;
-    std::shared_ptr<Shader> m_Shader;
+    std::unique_ptr<VertexArray> m_VAO;
+    std::shared_ptr<VertexBuffer> m_VBO;
+    std::unique_ptr<IndexBuffer> m_IBO;
 };

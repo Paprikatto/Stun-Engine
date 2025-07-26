@@ -1,7 +1,11 @@
 #include "IndexBuffer.h"
+
+#include <iostream>
+
 #include "Renderer.h"
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count): m_Count(count)
 {
+    if (!data) std::cout << "data is null!" << std::endl;
     ASSERT(sizeof(unsigned int) == sizeof(GLuint));
     //Create buffer that stores positions
     GL_CALL(glGenBuffers(1, &m_RendererID));
