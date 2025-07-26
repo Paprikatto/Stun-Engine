@@ -5,6 +5,7 @@
 #include <assimp/Importer.hpp>
 #include <utility>
 #include <assimp/postprocess.h>
+#include <ext/matrix_transform.hpp>
 
 std::optional<VertexBufferLayout> Model::bufferLayout;
 
@@ -26,12 +27,38 @@ void Model::Draw() const
     m_Shader.SetUniformMat4f("model", m_ModelMatrix);
     const glm::mat3 normal_matrix = glm::transpose(glm::inverse(m_ModelMatrix));
     m_Shader.SetUniformMat3f("normalMatrix", normal_matrix);
-    for (size_t i = 0; i < m_Meshes.size(); i++)
+    for (const auto & mesh : m_Meshes)
     {
-        std::cout << "Drawing mesh " << i << std::endl;
-        m_Meshes[i].Draw();
+        mesh.Draw();
     }
 }
+
+void Model::SetPosition(const glm::vec3& position)
+{
+    m_ModelMatrix = glm::translate(glm::mat4(1.0f), position);
+}
+
+void Model::RotateDegrees(const float degrees, const glm::vec3& axis)
+{
+    m_ModelMatrix = glm::rotate(m_ModelMatrix, glm::radians(degrees), axis);
+}
+
+void Model::RotateRadians(const float radians, const glm::vec3& axis)
+{
+    m_ModelMatrix = glm::rotate(m_ModelMatrix, radians, axis);
+}
+
+void Model::SetScale(const glm::vec3& scale)
+{
+    m_ModelMatrix = glm::scale(m_ModelMatrix, scale);
+}
+
+void Model::SetScale(const float scale)
+{
+    const glm::vec3 scale_vec(scale, scale, scale);
+    m_ModelMatrix = glm::scale(m_ModelMatrix, scale_vec);
+}
+
 void Model::loadModel(const std::string& path)
 {
     Assimp::Importer importer;

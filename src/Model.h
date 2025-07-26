@@ -9,6 +9,11 @@ public:
     explicit Model(const std::string& path, Shader &shader);
     void Draw() const;
     static std::optional<VertexBufferLayout> bufferLayout;
+    void SetPosition(const glm::vec3& position);
+    void RotateDegrees(float degrees, const glm::vec3& axis);
+    void RotateRadians(float radians, const glm::vec3& axis);
+    void SetScale(const glm::vec3& scale);
+    void SetScale(float scale);
 private:
     std::vector<Mesh> m_Meshes;
     Shader &m_Shader;

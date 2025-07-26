@@ -20,6 +20,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <filesystem>
+#include <iostream>
 
 #include "Camera.h"
 
@@ -79,8 +80,8 @@ int main(void)
 
     	//load model
     	// Model model("models/human/human.glb", lit_shader);
-    	// Model model("models/car/scene.gltf", lit_shader);
-    	Model model("models/woman/scene.gltf", lit_shader);
+    	Model model("models/car/scene.gltf", lit_shader);
+    	// Model model("models/woman/scene.gltf", lit_shader);
     	
     	lit_shader.Unbind();
     	Renderer renderer;
@@ -95,10 +96,9 @@ int main(void)
     	ImGui::StyleColorsDark();
     	
     	
-    	// glm::vec3 translation = glm::vec3(0.0f, 0.0f, 20.0f);
+    	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 2.0f);
     	glm::vec3 lightPos = glm::vec3(3.0f, 2.0f, 25.0f);
-    	// auto model_scale = glm::vec3(1.0f, 1.0f, 1.0f);
-    	// float scale = 1.0f;
+    	float scale = 1.0f;
 
     	double lastFrame = 0.0;
     	while (!glfwWindowShouldClose(window))
@@ -114,6 +114,8 @@ int main(void)
     		double currentFrame = glfwGetTime();
     		double deltaTime = currentFrame - lastFrame;
     		lastFrame = currentFrame;
+    		double fps = 1.0 / deltaTime;
+    		std::cout << "FPS: " << fps << std::endl;
 
     		//camera movement
     		glm::vec3 camera_movement(0.0f);
@@ -136,6 +138,9 @@ int main(void)
     		
 			//rendering
     		{
+    			model.SetPosition(translation);
+    			model.SetScale(scale);
+    			model.RotateRadians(static_cast<float>(currentFrame), glm::vec3(0.0f, 1.0f, 0.0f));
     			lit_shader.Bind();
     			lit_shader.SetUniformMat4f("view", camera.get_view_matrix());
     			lit_shader.SetUniformMat4f("projection", camera.get_projection_matrix());
@@ -145,8 +150,8 @@ int main(void)
     		}
     		//imgui
     		{
-    		// 	ImGui::SliderFloat3("position", &translation.x, -30.0f, 30.0f);
-    		// 	ImGui::SliderFloat("Scale", &scale, 0.0f, 5.0f);
+    			ImGui::SliderFloat3("position", &translation.x, -30.0f, 30.0f);
+    			ImGui::SliderFloat("Scale", &scale, 0.0f, 5.0f);
     			ImGui::SliderFloat3("lightPos", &lightPos.x, -40.0f, 40.0f);
     		}
     		// imgui end
