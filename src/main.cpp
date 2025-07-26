@@ -79,7 +79,8 @@ int main(void)
 
     	//load model
     	// Model model("models/human/human.glb", lit_shader);
-    	Model model("models/car/scene.gltf", lit_shader);
+    	// Model model("models/car/scene.gltf", lit_shader);
+    	Model model("models/woman/scene.gltf", lit_shader);
     	
     	lit_shader.Unbind();
     	Renderer renderer;
