@@ -13,11 +13,13 @@ VertexArray::VertexArray():m_RendererID(0)
 
 VertexArray::~VertexArray()
 {
-	std::cout << "Deleting VertexArray with ID: " << m_RendererID << std::endl;
-	GL_CALL(glDeleteVertexArrays(1, &m_RendererID));
+	if (m_RendererID != 0)
+	{
+		GL_CALL(glDeleteVertexArrays(1, &m_RendererID));
+	}
 }
 
-void VertexArray::AddBuffer(const std::shared_ptr<VertexBuffer>& vb, const VertexBufferLayout& layout)
+void VertexArray::AddBuffer(const std::shared_ptr<VertexBuffer>& vb, const VertexBufferLayout& layout) const
 {
 	Bind();
     vb->Bind();
@@ -34,12 +36,10 @@ void VertexArray::AddBuffer(const std::shared_ptr<VertexBuffer>& vb, const Verte
 
 void VertexArray::Bind() const
 {
-	std::cout << "Binding VertexArray with ID: " << m_RendererID << std::endl;
 	GL_CALL(glBindVertexArray(m_RendererID));
 }
 
 void VertexArray::Unbind() const
 {
-	std::cout << "Unbinding VertexArray with ID: " << m_RendererID << std::endl;
 	GL_CALL(glBindVertexArray(0));
 }

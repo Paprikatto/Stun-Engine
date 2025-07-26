@@ -15,7 +15,10 @@ IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count): m_Count(
 
 IndexBuffer::~IndexBuffer()
 {
-    GL_CALL(glDeleteBuffers(1, &m_RendererID));
+    if (m_RendererID != 0)
+    {
+        GL_CALL(glDeleteBuffers(1, &m_RendererID));
+    }
 }
 
 void IndexBuffer::Bind() const
