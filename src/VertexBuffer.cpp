@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "Renderer.h"
-VertexBuffer::VertexBuffer(const void* data, unsigned int size)
+VertexBuffer::VertexBuffer(const void* data, unsigned int size): m_RendererID(0)
 {
     //Create buffer that stores positions
     GL_CALL(glGenBuffers(1, &m_RendererID));
@@ -21,7 +21,6 @@ VertexBuffer::~VertexBuffer()
 
 void VertexBuffer::Bind() const
 {
-    std::cout << "Binding VertexBuffer with ID: " << m_RendererID << std::endl;
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 }
 
