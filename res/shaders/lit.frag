@@ -4,6 +4,7 @@ layout (location = 0) out vec4 color;
 
 in vec3 Normal;
 in vec3 FragPos;
+in vec2 TexCoords;
 
 uniform float ambientStrength;
 uniform vec3 lightPos;

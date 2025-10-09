@@ -20,5 +20,6 @@ private:
     glm::mat4 m_ModelMatrix = glm::mat4(1.0f); // Default model matrix
     void loadModel(const std::string& path);
     void processNode(aiNode* node, const aiScene* scene);
-    static Mesh processMesh(aiMesh* mesh);
+    static Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+    [[nodiscard]] static std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
 };

@@ -76,7 +76,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        m_Meshes.emplace_back(processMesh(mesh));
+        m_Meshes.emplace_back(processMesh(mesh, scene));
     }
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
@@ -84,7 +84,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     }
 }
 
-Mesh Model::processMesh(aiMesh* mesh)
+Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -115,7 +115,42 @@ Mesh Model::processMesh(aiMesh* mesh)
             indices.push_back(face.mIndices[j]);
         }
     }
-    //TODO: Process materials and textures
+    //Process materials and textures
+    if (mesh->mMaterialIndex > 0)
+    {
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+        
+        // Process diffuse maps
+        auto newTextures = loadMaterialTextures(material, aiTextureType_DIFFUSE, DIFFUSE);
+        textures.insert(textures.end(), newTextures.begin(), newTextures.end());
+        // Process specular maps
+        newTextures = loadMaterialTextures(material, aiTextureType_SPECULAR, SPECULAR);
+        textures.insert(textures.end(), newTextures.begin(), newTextures.end());
+    }
 
     return {vertices, indices, textures};
+}
+
+std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName)
+{
+    std::vector<Texture> textures;
+    for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+    {
+        aiString str;
+        mat->GetTexture(type, i, &str);
+        //check if texture is already loaded
+        bool skip = false;
+        for (const auto& texture : textures)
+        {
+            if (std::strcmp(texture.GetFilePath().c_str(), str.C_Str()) == 0)
+            {
+                skip = true;
+                break;
+            }
+        }
+        if (skip) continue;
+        Texture texture(str.C_Str(), typeName);
+        textures.push_back(texture);
+    }
+    return textures;
 }
