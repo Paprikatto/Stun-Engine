@@ -1,6 +1,7 @@
 #include "Model.h"
 
 #include <bemapiset.h>
+#include <iostream>
 #include <assimp/Importer.hpp>
 #include <utility>
 #include <assimp/postprocess.h>
@@ -141,37 +142,39 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         }
         
         // Process diffuse maps
-        material.diffuseMaps = loadMaterialTextures(ai_material, aiTextureType_DIFFUSE, DIFFUSE);
+        material.diffuseMaps = loadMaterialTextures(ai_material, aiTextureType_DIFFUSE);
         // Process specular maps
-        material.specularMaps = loadMaterialTextures(ai_material, aiTextureType_SPECULAR, SPECULAR);
+        material.specularMaps = loadMaterialTextures(ai_material, aiTextureType_SPECULAR);
     }
 
     return {vertices, indices, material};
 }
 
-std::vector<Texture*> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName)
+std::vector<const Texture*> Model::loadMaterialTextures(const aiMaterial* mat, const aiTextureType type)
 {
-    //TODO: optimize texture loading to avoid loading the same texture multiple times
-    //store textures in model and check if texture is already loaded
-    //then get the pointer to the texture from the model
-    std::vector<Texture*> textures;
+    std::vector<const Texture*> textures;
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
         mat->GetTexture(type, i, &str);
         //check if texture is already loaded
-        bool skip = false;
-        for (const auto& texture : textures)
-        {
-            if (std::strcmp(texture->GetFilePath().c_str(), str.C_Str()) == 0)
-            {
-                skip = true;
-                break;
-            }
-        }
-        if (skip) continue;
         auto texPath = m_Directory + std::string(str.C_Str());
-        textures.push_back(new Texture(texPath, typeName));
+        auto texture = findTexture(texPath);
+        textures.push_back(texture);
     }
     return textures;
+}
+/// @brief check if texture was already loaded, if not load it
+const Texture* Model::findTexture(const std::string& path)
+{
+    for (const auto& texture : m_TexturesLoaded)
+    {
+        if (texture->GetFilePath() == path)
+        {
+            return texture.get();
+        }
+    }
+    m_TexturesLoaded.emplace_back(std::make_unique<Texture>(path));
+    std::cout << "Loaded texture: " << path << std::endl;
+    return m_TexturesLoaded.back().get();
 }

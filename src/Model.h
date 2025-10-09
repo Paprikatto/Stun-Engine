@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include <assimp/scene.h>
 #include <optional>
+#include <memory>
 
 class Model {
 public:
@@ -17,11 +18,13 @@ public:
     void SetScale(float scale);
 private:
     std::vector<Mesh> m_Meshes;
+    std::vector<std::unique_ptr<Texture>> m_TexturesLoaded; // to avoid loading duplicate textures
     Shader &m_Shader;
     glm::mat4 m_ModelMatrix = glm::mat4(1.0f); // Default model matrix
     std::string m_Directory;
     void loadModel(const std::string& path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-    [[nodiscard]] std::vector<Texture*> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
+    [[nodiscard]] std::vector<const Texture*> loadMaterialTextures(const aiMaterial* mat, aiTextureType type);
+    const Texture* findTexture(const std::string& path);
 };

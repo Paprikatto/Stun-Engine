@@ -1,8 +1,8 @@
 #include "Texture.h"
 #include "stb/stb_image.h"
 #include <iostream>
-Texture::Texture(const std::string& filePath, TextureType type):
-m_RendererID(0), m_FilePath(filePath), m_TextureData(nullptr), m_Width(0), m_Height(0), m_BPP(0), m_Type(type)
+Texture::Texture(const std::string& filePath):
+m_RendererID(0), m_FilePath(filePath), m_TextureData(nullptr), m_Width(0), m_Height(0), m_BPP(0)
 {
     stbi_set_flip_vertically_on_load(true);
     m_TextureData = stbi_load(filePath.c_str(), &m_Width, &m_Height, &m_BPP, 4);
