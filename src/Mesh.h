@@ -8,6 +8,7 @@
 #include "IndexBuffer.h"
 #include "Texture.h"
 #include <bits/unique_ptr.h>
+#include "Material.h"
 
 struct Vertex{
     glm::vec3 position;
@@ -19,8 +20,8 @@ class Mesh {
 public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture*> textures;
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures);
+    Material m_Material;
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Material material);
 
     void Draw(Shader& shader) const;
 private:

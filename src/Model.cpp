@@ -116,23 +116,44 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         }
     }
     //Process materials and textures
+    Material material{};
     if (mesh->mMaterialIndex > 0)
     {
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+        aiMaterial* ai_material = scene->mMaterials[mesh->mMaterialIndex];
+
+        aiColor3D color(0.0f, 0.0f, 0.0f);
+        //get material diffuse color
+        if (AI_SUCCESS == ai_material->Get(AI_MATKEY_COLOR_DIFFUSE, color))
+        {
+            material.diffuseColor = glm::vec3(color.r, color.g, color.b);
+        }
+        //get material specular color
+        if (AI_SUCCESS == ai_material->Get(AI_MATKEY_COLOR_SPECULAR, color))
+        {
+            material.specularColor = glm::vec3(color.r, color.g, color.b);
+        }
+        
+        //get material shininess
+        float shininess = 0.0f;
+        if (AI_SUCCESS == ai_material->Get(AI_MATKEY_SHININESS, shininess))
+        {
+            material.shininess = shininess;
+        }
         
         // Process diffuse maps
-        auto newTextures = loadMaterialTextures(material, aiTextureType_DIFFUSE, DIFFUSE);
-        textures.insert(textures.end(), newTextures.begin(), newTextures.end());
+        material.diffuseMaps = loadMaterialTextures(ai_material, aiTextureType_DIFFUSE, DIFFUSE);
         // Process specular maps
-        newTextures = loadMaterialTextures(material, aiTextureType_SPECULAR, SPECULAR);
-        textures.insert(textures.end(), newTextures.begin(), newTextures.end());
+        material.specularMaps = loadMaterialTextures(ai_material, aiTextureType_SPECULAR, SPECULAR);
     }
 
-    return {vertices, indices, textures};
+    return {vertices, indices, material};
 }
 
 std::vector<Texture*> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName)
 {
+    //TODO: optimize texture loading to avoid loading the same texture multiple times
+    //store textures in model and check if texture is already loaded
+    //then get the pointer to the texture from the model
     std::vector<Texture*> textures;
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {

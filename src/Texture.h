@@ -29,7 +29,7 @@ public:
     ~Texture();
 
     void Bind(unsigned int slot = 0) const;
-    void Unbind() const;
+    static void Unbind();
 
     [[nodiscard]] int GetWidth() const { return m_Width; }
     [[nodiscard]] int GetHeight() const { return m_Height; }

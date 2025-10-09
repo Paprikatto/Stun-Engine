@@ -65,7 +65,6 @@ int main(void)
     	Shader lit_shader = Shader(___res_shaders_lit_vert, ___res_shaders_lit_vert_len,
     		___res_shaders_lit_frag, ___res_shaders_lit_frag_len);
     	lit_shader.Bind();
-    	// lit_shader.SetVec3f("objectColor", 0.6f, 0.6f, 0.6f);
     	lit_shader.SetVec3f("lightColor", 1.0f, 1.0f, 1.0f);
     	lit_shader.SetUniform1f("ambientStrength", 0.1f);
     	
