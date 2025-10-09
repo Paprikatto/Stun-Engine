@@ -2,14 +2,14 @@
 #include <utility>
 #include "Model.h"
 #include "Renderer.h"
+#include <iostream>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures):
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures):
     vertices(std::move(vertices)),
     indices(std::move(indices)),
     textures(std::move(textures))
 {
     m_VAO = std::make_unique<VertexArray>();
-    std::cout << "Creating mesh with " << this->vertices.size() << " vertices, " << this->indices.size() << " indices" << std::endl;
     if (!this->vertices.empty())
     {
         m_VBO = std::make_unique<VertexBuffer>(&this->vertices[0], this->vertices.size() * sizeof(Vertex));
@@ -30,10 +30,30 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     m_VAO->Unbind();
 }
 
-void Mesh::Draw() const
+void Mesh::Draw(Shader& shader) const
 {
+    unsigned int diffuseNr = 1;
+    unsigned int specularNr = 1;
+    for(unsigned int i = 0; i < textures.size(); i++)
+    {
+        std::string name;
+        TextureType type = textures[i]->GetType();
+        if(type == DIFFUSE)
+            name = "texture_diffuse" + std::to_string(diffuseNr++);
+        else if(type == SPECULAR)
+            name = "texture_specular" + std::to_string(specularNr++);
+
+        shader.SetUniform1i(name, i);
+        
+        textures[i]->Bind(i);
+    }
     m_VAO->Bind();
     m_VBO->Bind();
     m_IBO->Bind();
     GL_CALL(glDrawElements(GL_TRIANGLES, m_IBO->GetCount(), GL_UNSIGNED_INT, nullptr));
+    for(unsigned int i = 0; i < textures.size(); i++)
+    {
+        textures[i]->Unbind();
+    }
+    GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
 }

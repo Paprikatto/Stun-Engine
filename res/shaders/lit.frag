@@ -6,9 +6,9 @@ in vec3 Normal;
 in vec3 FragPos;
 in vec2 TexCoords;
 
+uniform sampler2D texture_diffuse1;
 uniform float ambientStrength;
 uniform vec3 lightPos;
-uniform vec3 objectColor;
 uniform vec3 lightColor;
 uniform vec3 viewPos;
 
@@ -29,6 +29,6 @@ void main(){
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularStrength * spec * lightColor;
 
-    vec3 result = (ambient + diffuse + specular) * objectColor;
+    vec3 result = (ambient + diffuse + specular) * texture(texture_diffuse1, TexCoords).rgb;
 	color = vec4(result, 1.0);
 }

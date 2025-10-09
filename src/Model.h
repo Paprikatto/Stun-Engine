@@ -3,6 +3,7 @@
 #include <vector>
 #include "Mesh.h"
 #include <assimp/scene.h>
+#include <optional>
 
 class Model {
 public:
@@ -18,8 +19,9 @@ private:
     std::vector<Mesh> m_Meshes;
     Shader &m_Shader;
     glm::mat4 m_ModelMatrix = glm::mat4(1.0f); // Default model matrix
+    std::string m_Directory;
     void loadModel(const std::string& path);
     void processNode(aiNode* node, const aiScene* scene);
-    static Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-    [[nodiscard]] static std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
+    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+    [[nodiscard]] std::vector<Texture*> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
 };

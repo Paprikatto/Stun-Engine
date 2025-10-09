@@ -1,7 +1,6 @@
 #include "Model.h"
 
 #include <bemapiset.h>
-#include <iostream>
 #include <assimp/Importer.hpp>
 #include <utility>
 #include <assimp/postprocess.h>
@@ -11,6 +10,7 @@ std::optional<VertexBufferLayout> Model::bufferLayout;
 
 Model::Model(const std::string& path, Shader &shader): m_Shader(shader)
 {
+    m_Directory = path.substr(0, path.find_last_of('/') + 1);
     if (!bufferLayout.has_value())
     {
         bufferLayout.emplace(VertexBufferLayout());
@@ -29,7 +29,7 @@ void Model::Draw() const
     m_Shader.SetUniformMat3f("normalMatrix", normal_matrix);
     for (const auto & mesh : m_Meshes)
     {
-        mesh.Draw();
+        mesh.Draw(m_Shader);
     }
 }
 
@@ -88,7 +88,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
+    std::vector<Texture*> textures;
 
     // Process vertices
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -131,9 +131,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     return {vertices, indices, textures};
 }
 
-std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName)
+std::vector<Texture*> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName)
 {
-    std::vector<Texture> textures;
+    std::vector<Texture*> textures;
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
@@ -142,15 +142,15 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
         bool skip = false;
         for (const auto& texture : textures)
         {
-            if (std::strcmp(texture.GetFilePath().c_str(), str.C_Str()) == 0)
+            if (std::strcmp(texture->GetFilePath().c_str(), str.C_Str()) == 0)
             {
                 skip = true;
                 break;
             }
         }
         if (skip) continue;
-        Texture texture(str.C_Str(), typeName);
-        textures.push_back(texture);
+        auto texPath = m_Directory + std::string(str.C_Str());
+        textures.push_back(new Texture(texPath, typeName));
     }
     return textures;
 }

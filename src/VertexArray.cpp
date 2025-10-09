@@ -8,7 +8,6 @@
 VertexArray::VertexArray():m_RendererID(0)
 {
 	GL_CALL(glGenVertexArrays(1, &m_RendererID));
-	std::cout << "Creating VertexArray with id "<< m_RendererID << std::endl;
 }
 
 VertexArray::~VertexArray()
