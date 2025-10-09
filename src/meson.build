@@ -22,4 +22,5 @@ sources = files(
     'Mesh.cpp',
     'Model.h',
     'Model.cpp',
+    'Material.h',
 )

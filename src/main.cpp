@@ -75,6 +75,7 @@ int main(void)
     	
     	lit_shader.Unbind();
     	Renderer renderer;
+    	renderer.SetBackgroundColor(glm::vec3(0.3f, 0.3f, 0.3f));
 
     	IMGUI_CHECKVERSION();
     	ImGui::CreateContext();
