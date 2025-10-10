@@ -52,6 +52,7 @@ void Mesh::Draw(Shader& shader, const glm::mat4 &modelMatrix) const
         shader.SetVec3f("material.specularColor", m_Material.specularColor.r, m_Material.specularColor.g, m_Material.specularColor.b);
     }
 
+    shader.SetUniform1f("material.opacity", m_Material.opacity);
     shader.SetUniform1f("material.shininess", m_Material.shininess);
 
     const auto finalModelMatrix = modelMatrix * m_transformMatrix;

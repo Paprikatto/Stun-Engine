@@ -56,7 +56,7 @@ int main(void)
 
 	{
     	GL_CALL(glEnable(GL_BLEND))
-    	glEnable(GL_DEPTH_TEST);
+    	GL_CALL(glEnable(GL_DEPTH_TEST));
     	GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))
     	
     	Camera camera(glm::vec3(0.0f, 0.0f, 10.0f), 45.0f, width, height);
@@ -130,7 +130,7 @@ int main(void)
     		{
     			model.SetPosition(translation);
     			model.SetScale(scale);
-    			model.RotateRadians(static_cast<float>(currentFrame), glm::vec3(0.0f, 1.0f, 0.0f));
+    			model.RotateRadians(static_cast<float>(currentFrame), glm::vec3(0.0f, 0.2f, 0.0f));
     			lit_shader.Bind();
     			lit_shader.SetUniformMat4f("view", camera.get_view_matrix());
     			lit_shader.SetUniformMat4f("projection", camera.get_projection_matrix());

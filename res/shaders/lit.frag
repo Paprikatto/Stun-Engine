@@ -6,6 +6,7 @@ struct Material {
     vec3 diffuseColor; //kolor bazowy
     vec3 specularColor; //kolor odbicia
     float shininess;
+    float opacity;
 };
 in vec3 Normal;
 in vec3 FragPos;
@@ -46,5 +47,5 @@ void main(){
     vec3 finalSpecularColor = useSpecularMap ? texture(specularMap, TexCoords).rgb : material.specularColor;
 
     vec3 result = ambient * finalDiffuseColor + diffuse * finalDiffuseColor + specular * finalSpecularColor;
-	color = vec4(result, 1.0);
+	color = vec4(result, material.opacity);
 }

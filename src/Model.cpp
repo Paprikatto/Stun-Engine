@@ -143,6 +143,12 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, const glm::mat4 node
         {
             material.shininess = shininess;
         }
+        //get material opacity
+        float opacity = 1.0f;
+        if (AI_SUCCESS == ai_material->Get(AI_MATKEY_OPACITY, opacity))
+        {
+            material.opacity = opacity;
+        }
         
         // Process diffuse maps
         material.diffuseMaps = loadMaterialTextures(ai_material, aiTextureType_DIFFUSE);
