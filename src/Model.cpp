@@ -7,6 +7,11 @@
 #include <assimp/postprocess.h>
 #include <ext/matrix_transform.hpp>
 
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Utilities.h"
+
 std::optional<VertexBufferLayout> Model::bufferLayout;
 
 Model::Model(const std::string& path, Shader &shader): m_Shader(shader)
@@ -24,13 +29,9 @@ Model::Model(const std::string& path, Shader &shader): m_Shader(shader)
 
 void Model::Draw() const
 {
-    m_Shader.Bind();
-    m_Shader.SetUniformMat4f("model", m_ModelMatrix);
-    const glm::mat3 normal_matrix = glm::transpose(glm::inverse(m_ModelMatrix));
-    m_Shader.SetUniformMat3f("normalMatrix", normal_matrix);
     for (const auto & mesh : m_Meshes)
     {
-        mesh.Draw(m_Shader);
+        mesh.Draw(m_Shader, m_ModelMatrix);
     }
 }
 
@@ -69,23 +70,25 @@ void Model::loadModel(const std::string& path)
     {
         throw std::runtime_error("ERROR::ASSIMP:: " + std::string(importer.GetErrorString()));
     }
-    processNode(scene->mRootNode, scene);
+    processNode(scene->mRootNode, scene, glm::mat4(1.0f));
 }
 
-void Model::processNode(aiNode* node, const aiScene* scene)
+void Model::processNode(aiNode* node, const aiScene* scene, const glm::mat4& parentTransform)
 {
+    auto nodeTransform = AiMatrix4x4ToGlm(node->mTransformation);
+    auto globalTransform = parentTransform * nodeTransform;
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        m_Meshes.emplace_back(processMesh(mesh, scene));
+        m_Meshes.emplace_back(processMesh(mesh, scene, globalTransform));
     }
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
-        processNode(node->mChildren[i], scene);
+        processNode(node->mChildren[i], scene, globalTransform);
     }
 }
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, const glm::mat4 nodeTransform)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -147,7 +150,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         material.specularMaps = loadMaterialTextures(ai_material, aiTextureType_SPECULAR);
     }
 
-    return {vertices, indices, material};
+    return {vertices, indices, material, nodeTransform};
 }
 
 std::vector<const Texture*> Model::loadMaterialTextures(const aiMaterial* mat, const aiTextureType type)

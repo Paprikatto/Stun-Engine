@@ -23,8 +23,8 @@ private:
     glm::mat4 m_ModelMatrix = glm::mat4(1.0f); // Default model matrix
     std::string m_Directory;
     void loadModel(const std::string& path);
-    void processNode(aiNode* node, const aiScene* scene);
-    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+    void processNode(aiNode* node, const aiScene* scene, const glm::mat4& parentTransform);
+    Mesh processMesh(aiMesh* mesh, const aiScene* scene, glm::mat4 nodeTransform);
     [[nodiscard]] std::vector<const Texture*> loadMaterialTextures(const aiMaterial* mat, aiTextureType type);
     const Texture* findTexture(const std::string& path);
 };

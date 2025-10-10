@@ -4,9 +4,10 @@
 #include "Renderer.h"
 #include <iostream>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Material material):
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Material material, glm::mat4 transform):
     vertices(std::move(vertices)),
     indices(std::move(indices)),
+    m_transformMatrix(transform),
     m_Material(std::move(material))
 {
     m_VAO = std::make_unique<VertexArray>();
@@ -30,7 +31,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Mate
     m_VAO->Unbind();
 }
 
-void Mesh::Draw(Shader& shader) const
+void Mesh::Draw(Shader& shader, const glm::mat4 &modelMatrix) const
 {
     //use texture or material color
     if (!m_Material.diffuseMaps.empty()) {
@@ -52,6 +53,12 @@ void Mesh::Draw(Shader& shader) const
     }
 
     shader.SetUniform1f("material.shininess", m_Material.shininess);
+
+    const auto finalModelMatrix = modelMatrix * m_transformMatrix;
+    shader.SetUniformMat4f("model", finalModelMatrix);
+
+    const auto normal_matrix = glm::mat3(glm::transpose(glm::inverse(finalModelMatrix)));
+    shader.SetUniformMat3f("normalMatrix", normal_matrix);
 
     m_VAO->Bind();
     m_VBO->Bind();

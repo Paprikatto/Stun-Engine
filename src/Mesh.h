@@ -20,10 +20,11 @@ class Mesh {
 public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
+    glm::mat4 m_transformMatrix = glm::mat4(1.0f);
     Material m_Material;
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Material material);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Material material, glm::mat4 transform = glm::mat4(1.0f));
 
-    void Draw(Shader& shader) const;
+    void Draw(Shader& shader, const glm::mat4 &modelMatrix) const;
 private:
     std::unique_ptr<VertexArray> m_VAO;
     std::shared_ptr<VertexBuffer> m_VBO;

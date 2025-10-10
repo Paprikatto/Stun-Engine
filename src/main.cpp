@@ -59,24 +59,23 @@ int main(void)
     	glEnable(GL_DEPTH_TEST);
     	GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))
     	
-    	Camera camera(glm::vec3(0.0f, 0.0f, 23.0f), 45.0f, width, height);
+    	Camera camera(glm::vec3(0.0f, 0.0f, 10.0f), 45.0f, width, height);
 
 
+    	//shader setup
     	Shader lit_shader = Shader(___res_shaders_lit_vert, ___res_shaders_lit_vert_len,
     		___res_shaders_lit_frag, ___res_shaders_lit_frag_len);
     	lit_shader.Bind();
     	lit_shader.SetVec3f("lightColor", 1.0f, 1.0f, 1.0f);
     	lit_shader.SetUniform1f("ambientStrength", 0.1f);
-    	
-    	//load model
-    	// Model model("models/human/human.glb", lit_shader);
-    	Model model("models/car/scene.gltf", lit_shader);
-    	// Model model("models/woman/scene.gltf", lit_shader);
-    	
     	lit_shader.Unbind();
+    	
+    	Model model("models/car/scene.gltf", lit_shader);
+    	
     	Renderer renderer;
     	renderer.SetBackgroundColor(glm::vec3(0.3f, 0.3f, 0.3f));
 
+    	//imgui setup
     	IMGUI_CHECKVERSION();
     	ImGui::CreateContext();
     	ImGuiIO& io = ImGui::GetIO();
@@ -141,8 +140,8 @@ int main(void)
     		}
     		//imgui
     		{
-    			ImGui::SliderFloat3("position", &translation.x, -30.0f, 30.0f);
-    			ImGui::SliderFloat("Scale", &scale, 0.0f, 5.0f);
+    			ImGui::SliderFloat3("position", &translation.x, -20.0f, 20.0f);
+    			ImGui::SliderFloat("Scale", &scale, 0.0f, 10.0f);
     			ImGui::SliderFloat3("lightPos", &lightPos.x, -40.0f, 40.0f);
     		}
     		// imgui end
