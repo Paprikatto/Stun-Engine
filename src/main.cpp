@@ -120,6 +120,10 @@ int main(void)
 				camera_movement.x += -1.0f;
 			if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 				camera_movement.x += 1.0f;
+			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+				camera_movement.y += 1.0f;
+			if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+				camera_movement.y += -1.0f;
 
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 			{
@@ -129,7 +133,7 @@ int main(void)
 			}
 
 
-			float speed = static_cast<float>(10.0 * deltaTime);
+			float speed = static_cast<float>(5.0 * deltaTime);
 			camera_movement.x *= speed;
 			camera_movement.y *= speed;
 			camera_movement.z *= speed;
@@ -151,7 +155,7 @@ int main(void)
     		//imgui
     		{
     			ImGui::SliderFloat3("position", &translation.x, -20.0f, 20.0f);
-    			ImGui::SliderFloat("Scale", &scale, 0.0f, 30.0f);
+    			ImGui::SliderFloat("Scale", &scale, 0.0f, 50.0f);
     			ImGui::SliderFloat3("lightPos", &lightPos.x, -40.0f, 40.0f);
     		}
     		// imgui end
