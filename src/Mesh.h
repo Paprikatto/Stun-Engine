@@ -7,7 +7,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Texture.h"
-#include <bits/unique_ptr.h>
+#include <memory>
 #include "Material.h"
 
 struct Vertex{

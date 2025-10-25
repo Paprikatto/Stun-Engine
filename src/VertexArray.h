@@ -1,5 +1,5 @@
 #pragma once
-#include <bits/shared_ptr.h>
+#include<memory>
 
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"

@@ -24,4 +24,6 @@ sources = files(
     'Model.cpp',
     'Material.h',
     'Utilities.h',
+    'InputServer.h',
+    'InputServer.cpp',
 )
