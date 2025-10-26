@@ -37,8 +37,8 @@ int main(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	constexpr int width = 640;
-	constexpr int height = 480;
+	constexpr int width = 1600;
+	constexpr int height = 900;
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
     if (!window)
